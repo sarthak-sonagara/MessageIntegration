@@ -1,0 +1,13 @@
+bei kafka.config ma hardcoded string ni jagya e properties file mathi levanu
+kafka.config.getProducer() ma properties ma linger.ms shu kare chhe?
+bei kafka.config ma props sivay Serialize no instance aapiney kari kari shakay.
+message ma convertToUniversalMessage ke getUniversalMessage field banavine constructor vakhte j
+TeamsMessage.convertToUniversalMessage() ma new constructor thi banavu ke beans vapru
+TeamsMessage.convertToUniversalMessage() ma "TEAMS" hardcoded.
+Test kai rite lakhay ee puchhvanu chhe.
+producer.close() kya rakhu.
+kafkaservice.getUniversalMessage() ma unckecked cast warning
+For now, to add new channel to send the message, add method in controller, make ChannelMessage implementing ChannelMessage
+optimize all build.gradle files
+MongoConfig, MongoService ma hardcoded string data
+UniversalMessage ma @Document ma hardcoded string

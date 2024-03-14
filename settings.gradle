@@ -1,0 +1,5 @@
+rootProject.name = 'MessageIntegration'
+include ':store'
+include ':send'
+include ':universal'
+
