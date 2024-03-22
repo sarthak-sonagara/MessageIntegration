@@ -14,3 +14,5 @@ UniversalMessage ma @Document ma hardcoded string
 producer, consumer, close karvana chhe.
 database clear
 com.sms.send.reddit.RedditAuthenticationService ma Redirect uri hardcoded
+Front ni design
+MongoService ma collection na naam hardcoded.
