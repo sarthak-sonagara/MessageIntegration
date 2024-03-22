@@ -19,15 +19,11 @@ import java.util.Map;
 @Service
 public class KafkaService {
     private final Consumer<String, UniversalMessage> consumer;
-    private final MongoService mongoService;
-    private final ElasticService elasticService;
     @Autowired
     public KafkaService(Consumer<String, UniversalMessage> consumer, MongoService mongoService, ElasticService elasticService) {
         this.consumer = consumer;
-        this.mongoService = mongoService;
-        this.elasticService = elasticService;
     }
-    public void getUniversalMessage(){
+    public List<UniversalMessage> getUniversalMessage(){
         System.out.println("Before poll");
         ConsumerRecords<String,UniversalMessage> records = consumer.poll(Duration.ofMillis(100000));
         System.out.println("After poll");
@@ -36,9 +32,6 @@ public class KafkaService {
             messages.add(record.value());
             System.out.println(record.value().getContent());
         }
-        System.out.println("before mongo");
-        mongoService.storeUniversalMessage(messages);
-        System.out.println("before elastic");
-        elasticService.storeUniversalMessage(messages);
+        return messages;
     }
 }

@@ -11,3 +11,6 @@ For now, to add new channel to send the message, add method in controller, make 
 optimize all build.gradle files
 MongoConfig, MongoService ma hardcoded string data
 UniversalMessage ma @Document ma hardcoded string
+producer, consumer, close karvana chhe.
+database clear
+com.sms.send.reddit.RedditAuthenticationService ma Redirect uri hardcoded

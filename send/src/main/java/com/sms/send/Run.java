@@ -11,7 +11,7 @@ public class Run {
             String teamsMessage = myObj.nextLine();
             if(teamsMessage.equals("EXIT"))
                 break;
-            controller.putMessageFromTeams(teamsMessage);
+            //controller.putMessageFromTeams(teamsMessage);
         }
     }
 }
