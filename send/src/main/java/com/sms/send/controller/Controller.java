@@ -1,5 +1,6 @@
 package com.sms.send.controller;
 
+import com.sms.send.data.DataService;
 import com.sms.send.mongo.MongoService;
 import com.sms.universal.UniversalMessage;
 import org.springframework.http.HttpStatus;
@@ -13,25 +14,17 @@ import java.util.List;
 
 @org.springframework.stereotype.Controller
 public class Controller {
-    private final MongoService mongoService;
+    private final DataService dataService;
 
-    public Controller(MongoService mongoService) {
-        this.mongoService = mongoService;
+    public Controller(DataService dataService) {
+        this.dataService = dataService;
     }
 
     @PostMapping(value = "/regex",consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> putRegexList(@RequestBody List<String> regexes){
-        mongoService.storeRegexList(regexes);
+        dataService.storeRegexList(regexes);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/regex")
-    public ResponseEntity<List<String>> getRegexList(){
-        return new ResponseEntity<>(mongoService.getRegexList(),HttpStatus.OK);
-    }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<UniversalMessage>> getAllUniversalMessages(){
-        return new ResponseEntity<>(mongoService.getUniversalMessages(),HttpStatus.OK);
-    }
 }

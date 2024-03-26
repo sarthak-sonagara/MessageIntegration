@@ -32,6 +32,7 @@ public class KafkaConfig {
     public Consumer<String, UniversalMessage> getConsumer(){
         Properties properties = new Properties();
         properties.setProperty("bootstrap.servers", "localhost:9092");
+        properties.put("zookeeper.connect","localhost:2181");
         properties.setProperty("group.id", "StoreInDatabase");
         properties.setProperty("enable.auto.commit", "true");
         properties.setProperty("auto.commit.interval.ms", "1000");

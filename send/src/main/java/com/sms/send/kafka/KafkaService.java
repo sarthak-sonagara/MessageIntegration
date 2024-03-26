@@ -24,10 +24,10 @@ public class KafkaService {
     public void putUniversalMessage(UniversalMessage message){
         producer.send(new ProducerRecord<>(KafkaConfig.topicName, message.getSource(),message));
     }
-    public List<UniversalMessage> getUniversalMessage(){
-        System.out.println("Before poll");
+    public List<UniversalMessage> getUniversalMessages(){
+//        System.out.println("Before poll");
         ConsumerRecords<String,UniversalMessage> records = consumer.poll(Duration.ofMillis(100000));
-        System.out.println("After poll");
+//        System.out.println("After poll");
         List<UniversalMessage> messages = new ArrayList<>();
         for(ConsumerRecord<String,UniversalMessage> record : records){
             messages.add(record.value());

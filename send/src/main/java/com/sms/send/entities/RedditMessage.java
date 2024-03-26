@@ -1,6 +1,10 @@
 package com.sms.send.entities;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sms.universal.UniversalMessage;
+
+import java.util.Map;
 
 public class RedditMessage implements ChannelMessage{
     private final String redditMessage;
@@ -8,7 +12,7 @@ public class RedditMessage implements ChannelMessage{
         this.redditMessage = redditMessage;
     }
     @Override
-    public UniversalMessage convertToUniversalMessage() {
+    public UniversalMessage convertToUniversalMessage(){
         return new UniversalMessage(redditMessage,getChannelName());
     }
 

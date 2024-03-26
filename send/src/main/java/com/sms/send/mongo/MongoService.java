@@ -3,6 +3,7 @@ package com.sms.send.mongo;
 import com.sms.send.entities.Regex;
 import com.sms.universal.UniversalMessage;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class MongoService {
 
     public void storeRegexList(List<String> regexStringList) {
         List<Regex> regexList = regexStringList.stream().map(Regex::new).collect(Collectors.toList());
+        mongoTemplate.remove(new Query(),"RegexList");
         mongoTemplate.insert(regexList,"RegexList");
     }
 

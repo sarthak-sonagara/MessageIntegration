@@ -8,8 +8,6 @@ public class Main {
     public static void main(String[] args) {
         ApplicationContext ctx = new AnnotationConfigApplicationContext(KafkaConfig.class);
         DataService dataService = ctx.getBean(DataService.class);
-        while(true){
-            dataService.storeInDatabases();
-        }
+        dataService.storeIncomingMessages();
     }
 }
