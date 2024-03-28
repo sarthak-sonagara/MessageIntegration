@@ -1,5 +1,5 @@
 package com.sms.send.kafka;
-import com.sms.universal.UniversalMessage;
+import com.sms.send.data.entities.UniversalMessage;
 import org.apache.kafka.common.serialization.Serializer;
 
 import java.io.ByteArrayOutputStream;

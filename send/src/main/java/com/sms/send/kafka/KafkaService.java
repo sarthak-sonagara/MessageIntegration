@@ -1,6 +1,6 @@
 package com.sms.send.kafka;
 
-import com.sms.universal.UniversalMessage;
+import com.sms.send.data.entities.UniversalMessage;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -24,14 +24,12 @@ public class KafkaService {
     public void putUniversalMessage(UniversalMessage message){
         producer.send(new ProducerRecord<>(KafkaConfig.topicName, message.getSource(),message));
     }
+
     public List<UniversalMessage> getUniversalMessages(){
-//        System.out.println("Before poll");
         ConsumerRecords<String,UniversalMessage> records = consumer.poll(Duration.ofMillis(100000));
-//        System.out.println("After poll");
         List<UniversalMessage> messages = new ArrayList<>();
         for(ConsumerRecord<String,UniversalMessage> record : records){
             messages.add(record.value());
-            System.out.println(record.value().getContent());
         }
         return messages;
     }

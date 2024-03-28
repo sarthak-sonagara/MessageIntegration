@@ -1,9 +1,9 @@
 package com.sms.send.data;
 
-import com.sms.send.elastic.ElasticService;
-import com.sms.send.mongo.MongoService;
+import com.sms.send.data.elastic.ElasticService;
+import com.sms.send.data.mongo.MongoService;
 import com.sms.send.regex.ProcessingService;
-import com.sms.universal.UniversalMessage;
+import com.sms.send.data.entities.UniversalMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +21,6 @@ public class DataService {
         this.mongoService = mongoService;
         this.elasticService = elasticService;
     }
-
-    // method to store regex in db
-
-    // method to get regex from db
     private List<String> getRegexList(){
         return mongoService.getRegexList();
     }
@@ -36,11 +32,7 @@ public class DataService {
     public void storeIncomingMessages(){
         while(true){
             List<UniversalMessage> messages = processingService.getProcessedMessages(getRegexList());
-//            System.out.println("processed messages:");
-//            System.out.println(messages);
-//            System.out.println("before mongo");
             mongoService.storeUniversalMessage(messages);
-//            System.out.println("before elastic");
             elasticService.storeUniversalMessage(messages);
         }
     }

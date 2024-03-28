@@ -1,6 +1,6 @@
 package com.sms.send.kafka;
 
-import com.sms.universal.UniversalMessage;
+import com.sms.send.data.entities.UniversalMessage;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -16,7 +16,7 @@ import java.util.Properties;
 @Configuration
 @ComponentScan(basePackages = "com.sms.send")
 public class KafkaConfig {
-    public final static String topicName = "StoreInDatabase";
+    protected final static String topicName = "StoreInDatabase";
     @Bean
     public Producer<String, UniversalMessage>  getProducer(){
         Properties properties = new Properties();
