@@ -37,4 +37,8 @@ public class DataService {
         }
     }
 
+    public List<UniversalMessage> getFreeTextSearchResult(String input){
+        return elasticService.freeTextSearch(input);
+    }
+
 }

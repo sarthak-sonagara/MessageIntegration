@@ -1,11 +1,13 @@
 package com.sms.send.data.entities;
 
+
 import java.io.Serializable;
 
 public class UniversalMessage implements Serializable {
     private String content;
     private String source;
 
+    public UniversalMessage(){}
     public UniversalMessage(String content, String source) {
         this.content = content;
         this.source = source;
