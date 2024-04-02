@@ -24,11 +24,8 @@ public class RedditGrabber extends UniversalGrabber {
         try {
             JsonNode node = mapper.readTree(rawMessage);
             JsonNode children = node.get("data").get("children");
-            Integer messageNumber = 1;
             for(JsonNode child : children){
-                message.append(messageNumber).append("----------------------------------\n");
-                message.append(child.get("data").get("selftext").asText()).append("\n");
-                messageNumber++;
+                message.append(child.get("data").get("selftext").asText());
             }
         } catch (JsonProcessingException e) {
             System.out.println("Not storing message because cannot find selftext field.");

@@ -18,10 +18,6 @@ public class MongoService {
         this.mongoTemplate = mongoTemplate;
     }
 
-    public void storeUniversalMessage(List<UniversalMessage> messages){
-        mongoTemplate.insert(messages,MongoConfig.messageCollectionName);
-    }
-
     public void storeRegexList(@NotNull List<String> regexStringList) {
         List<Regex> regexList = regexStringList.stream().map(Regex::new).collect(Collectors.toList());
         mongoTemplate.remove(new Query(),MongoConfig.regexCollectionName);
@@ -31,5 +27,12 @@ public class MongoService {
     public List<String> getRegexList(){
         List<Regex> regexList = mongoTemplate.findAll(Regex.class,MongoConfig.regexCollectionName);
         return regexList.stream().map(Regex::getRegex).collect(Collectors.toList());
+    }
+
+    public void storeMatchedMessages(List<UniversalMessage> matchedMessages) {
+        mongoTemplate.insert(matchedMessages,MongoConfig.matchedCollectionName);
+    }
+    public void storeUnmatchedMessages(List<UniversalMessage> unmatchedMessages) {
+        mongoTemplate.insert(unmatchedMessages,MongoConfig.unmatchedCollectionName);
     }
 }

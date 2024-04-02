@@ -1,6 +1,7 @@
 package com.sms.send.data;
 
 import com.sms.send.data.elastic.ElasticService;
+import com.sms.send.data.entities.ProcessedMessages;
 import com.sms.send.data.mongo.MongoService;
 import com.sms.send.regex.ProcessingService;
 import com.sms.send.data.entities.UniversalMessage;
@@ -31,9 +32,10 @@ public class DataService {
 
     public void storeIncomingMessages(){
         while(true){
-            List<UniversalMessage> messages = processingService.getProcessedMessages(getRegexList());
-            mongoService.storeUniversalMessage(messages);
-            elasticService.storeUniversalMessage(messages);
+            ProcessedMessages messages = processingService.getProcessedMessages(getRegexList());
+            mongoService.storeMatchedMessages(messages.getMatchedMessages());
+            mongoService.storeUnmatchedMessages(messages.getUnmatchedMessages());
+            elasticService.storeUniversalMessage(messages.getMatchedMessages());
         }
     }
 

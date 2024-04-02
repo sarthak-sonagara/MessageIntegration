@@ -1,15 +1,21 @@
 package com.sms.send.channels.reddit;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.http.HttpResponse;
 
 @Controller
 @RequestMapping("/reddit")
@@ -35,43 +41,44 @@ public class RedditController{
         }
         try {
             String accessToken = redditService.getAccessToken(code);
-            Cookie cookie = new Cookie("access_token", accessToken);
-            cookie.setMaxAge(60*60);
-            response.addCookie(cookie);
+            String cookieString = "access_token="+accessToken+"; Max-Age=3600";
+            return getRedirectResponseEntity(ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/reddit/data")
+                    .build()
+                    .toUriString(),cookieString);
         } catch (IOException e) {
             return new ResponseEntity<>("IO error",HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (InterruptedException e) {
             return new ResponseEntity<>("Interrupted error",HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (StatusCodeException e) {
             System.out.println(e.getMessage());
-            return new ResponseEntity<>("Request failed.",HttpStatus.INTERNAL_SERVER_ERROR);
+            return getRedirectResponseEntity(redditService.getUrl(),null);
         }
-        return new ResponseEntity<>("http://localhost:8081/Gradle___com_sms_send___send_1_0_SNAPSHOT_war__exploded_/reddit/data", HttpStatus.OK);
     }
 
     @GetMapping("/data")
-    public ResponseEntity<String> getMyDetailsReddit(@NotNull HttpServletRequest request){
+    public ResponseEntity<String> getMyDetailsReddit(@NotNull HttpServletRequest request, HttpServletResponse httpResponse){
         Cookie[] cookies = request.getCookies();
-        String accessToken = null;
-        for(Cookie cookie : cookies){
-            if("access_token".equals(cookie.getName())){
-                accessToken = cookie.getValue();
-            }
-        }
+        String accessToken = getCookieValue("access_token", cookies);
         if(accessToken==null){
-            return new ResponseEntity<>("Not authenticated, go to /reddit/url first", HttpStatus.OK);
+            return getRedirectResponseEntity(redditService.getUrl(),null);
         }
         try {
-            String response = redditService.getMyDetails(accessToken);
-            redditGrabber.convertAndPutMessage(response);
-            return new ResponseEntity<>("This is saved in database \n" + response,HttpStatus.OK);
+            String after = getCookieValue("after", cookies);
+            String redditResponse = redditService.getMyDetails(accessToken,after);
+            Cookie cookie = new Cookie("after",getAfterValue(redditResponse));
+            cookie.setMaxAge(60*60);
+            httpResponse.addCookie(cookie);
+            redditGrabber.convertAndPutMessage(redditResponse);
+            return new ResponseEntity<>("This is saved in database \n" + redditResponse,HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>("IO error",HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (InterruptedException e) {
             return new ResponseEntity<>("Interrupted error",HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (StatusCodeException e) {
             System.out.println(e.getMessage());
-            return new ResponseEntity<>("Not authenticated, go to /reddit/url first", HttpStatus.OK);
+            return getRedirectResponseEntity(redditService.getUrl(),null);
         }
     }
 
@@ -79,6 +86,38 @@ public class RedditController{
     public ResponseEntity<String> getRedditUserUrl(){
         String url = redditService.getUrl();
         return ResponseEntity.ok(url);
+    }
+    private ResponseEntity<String> getRedirectResponseEntity(String newUri, String cookieString){
+        // Create HTTP headers with the redirect location
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.LOCATION, newUri);
+        headers.add(HttpHeaders.SET_COOKIE,cookieString);
+        // Return ResponseEntity with HTTP status 302 Found and redirect headers
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .headers(headers)
+                .build();
+    }
+
+    private String getCookieValue(String cookieName, Cookie[] cookies){
+        if(cookies==null)
+            return null;
+        for(Cookie cookie : cookies){
+            if(cookieName.equals(cookie.getName())){
+                return cookie.getValue();
+            }
+        }
+        return null;
+    }
+
+    private String getAfterValue(String response){
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            JsonNode node = mapper.readTree(response);
+            return node.get("data").get("after").asText();
+        } catch (JsonProcessingException e) {
+            System.out.println("cannot find after field.");
+            return null;
+        }
     }
 
 }

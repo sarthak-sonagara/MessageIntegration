@@ -1,6 +1,9 @@
 package com.sms.send.channels.reddit;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sms.send.data.entities.UniversalMessage;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -63,8 +66,9 @@ public class RedditService {
         return "Basic " + Base64.getEncoder().encodeToString(authString.getBytes());
     }
 
-    public String getMyDetails(String accessToken) throws IOException, InterruptedException, StatusCodeException {
+    public String getMyDetails(String accessToken, String after) throws IOException, InterruptedException, StatusCodeException {
         String apiUrl = "https://oauth.reddit.com/new";
+        apiUrl += "?limit=1&after=" + after;
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiUrl))
@@ -75,10 +79,8 @@ public class RedditService {
 
         int statusCode = response.statusCode();
         if (statusCode == 200) {
-            // Request successful, return response body
             return response.body();
         } else {
-            // Request failed, handle error
             throw new StatusCodeException(statusCode);
         }
     }

@@ -25,7 +25,6 @@ dependencies {
     implementation 'javax:javaee-web-api:8.0.1'
     // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
     implementation 'javax.servlet:javax.servlet-api:3.0.1'
-
     // mongo
     implementation 'org.springframework.data:spring-data-mongodb:3.3.5'
     implementation 'org.mongodb:mongodb-driver-sync:4.7.2'

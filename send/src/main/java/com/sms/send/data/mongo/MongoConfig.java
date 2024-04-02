@@ -8,7 +8,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 @Configuration
 public class MongoConfig {
-    protected static final String messageCollectionName = "UniversalCOL";
+    protected static final String matchedCollectionName = "MatchedCOL";
+    protected static final String unmatchedCollectionName = "UnmatchedCOL";
     protected static final String regexCollectionName = "RegexList";
     @Bean
     protected MongoClient mongoClient() {
